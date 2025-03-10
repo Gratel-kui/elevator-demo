@@ -30,7 +30,7 @@ Swagger UI documentation is available at:
 http://localhost:3000/api-docs
 ```
 
-### Get Month Start Times
+### 3.1 Get Month Start Times
 
 ```
 GET /months?lon={lon}&lat={lat}&from={from}&to={to}
@@ -61,15 +61,7 @@ http://localhost:3000/months?lon=121.47&lat=31.23&from=2024-01&to=2024-03
 }
 ```
 
-## Health Check
-
-```
-GET /health
-```
-
-Returns "OK" if the service is running properly.
-
-### GET formatted-months
+### 3.2 GET formatted-months
  
 ```
 GET /formatted-months?lon={lon}&lat={lat}&from={from}&to={to}&dateFormat={dateFormat}
@@ -109,3 +101,12 @@ http://localhost:3000/formatted-months?lon=121.47&lat=31.23&from=2024-01&to=2024
   }
 }
 ```
+
+
+## 3.3 Health Check
+
+```
+GET /health
+```
+
+Returns "OK" if the service is running properly.
