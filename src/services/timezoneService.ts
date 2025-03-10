@@ -1,15 +1,28 @@
 import { DateTime } from 'luxon';
+import { find } from 'geo-tz';
 
 /**
- * Get timezone from coordinates
- * Note: This is a simplified implementation. In a real application, 
- * you might need a more complex mapping from geographic location to timezone.
+ * Get timezone from coordinates using accurate timezone database
+ * @param lon Longitude of the location
+ * @param lat Latitude of the location
+ * @returns IANA timezone identifier (e.g., "Asia/Shanghai")
  */
 export function getTimezoneFromCoordinates(lon: number, lat: number): string {
-  // Simplified implementation: roughly estimate timezone based on longitude
-  // In a real application, you should use a more accurate library for mapping geographic location to timezone
-  const timezoneOffset = Math.round(lon / 15);
-  return `UTC${timezoneOffset >= 0 ? '+' : ''}${timezoneOffset}`;
+  try {
+    // geo-tz returns an array of possible timezones, we take the first one
+    const timezones = find(lat, lon);
+    
+    if (!timezones || timezones.length === 0) {
+      console.warn(`No timezone found for coordinates: ${lat}, ${lon}. Falling back to UTC.`);
+      return 'UTC';
+    }
+    
+    return timezones[0];
+  } catch (error) {
+    console.error(`Error determining timezone for coordinates: ${lat}, ${lon}`, error);
+    // Fallback to UTC in case of error
+    return 'UTC';
+  }
 }
 
 /**
@@ -50,11 +63,8 @@ export function getMonthStarts(timezone: string, fromMonth: string, toMonth: str
     // Add the end time of the current month to the results
     const monthEnd = nextMonth.startOf('month').minus({ seconds: 1 });
     const isoString = monthEnd.toUTC().toISO();
-    if (isoString) {
-      monthStarts.push(isoString);
-    } else {
-      throw new Error('Failed to convert date to ISO string');
-    }
+    if (!isoString) throw new Error('Invalid date conversion');
+    monthStarts.push(isoString);
     
     // Move to the next month
     currentDate = nextMonth;

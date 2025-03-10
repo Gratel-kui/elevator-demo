@@ -10,8 +10,23 @@ export function getMonthsStartTimes(req: Request, res: Response): void {
     const to = req.query.to as string;
     
     // Validate parameters
-    if (isNaN(lon) || isNaN(lat) || !from || !to) {
-      res.status(400).json({ error: 'Missing or invalid parameters' });
+    if (isNaN(lon)) {
+      res.status(400).json({ error: 'Invalid longitude parameter' });
+      return;
+    }
+    
+    if (isNaN(lat)) {
+      res.status(400).json({ error: 'Invalid latitude parameter' });
+      return;
+    }
+    
+    if (!from || !/^\d{4}-\d{2}$/.test(from)) {
+      res.status(400).json({ error: 'Invalid from parameter. Format should be YYYY-MM' });
+      return;
+    }
+    
+    if (!to || !/^\d{4}-\d{2}$/.test(to)) {
+      res.status(400).json({ error: 'Invalid to parameter. Format should be YYYY-MM' });
       return;
     }
     
@@ -25,6 +40,9 @@ export function getMonthsStartTimes(req: Request, res: Response): void {
     res.json({ monthStarts });
   } catch (error) {
     console.error('Error processing request:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 } 
