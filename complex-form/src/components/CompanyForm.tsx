@@ -94,13 +94,6 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Product type mapping for display
-const productTypeLabels: Record<string, string> = {
-  passenger: "客梯",
-  hydraulic: "自动扶梯",
-  humanoid: "自动人行道"
-};
-
 export function CompanyForm() {
   const [productType, setProductType] = useState<string | undefined>();
   const [usePresets, setUsePresets] = useState(true);
