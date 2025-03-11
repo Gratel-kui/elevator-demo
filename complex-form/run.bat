@@ -1,0 +1,6 @@
+@echo off
+echo Installing dependencies...
+call npm install
+
+echo Starting the development server on port 3001...
+call npm run dev
